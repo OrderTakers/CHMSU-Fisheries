@@ -37,9 +37,9 @@ export const uploadImageToSupabase = async (file: File): Promise<ImageUploadResp
       };
       reader.readAsDataURL(file);
     });
-  } catch (error: any) {
-    return { success: false, error: 'Failed to upload image' };
-  }
+ } catch (error) {
+  console.error('Image upload failed:', error);
+  throw new Error(`Upload failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
 }
 
 export const deleteImageFromSupabase = async (imageUrl: string): Promise<boolean> => {
