@@ -1,11 +1,11 @@
 // lib/image-upload.ts - Simple base64 solution
-export interface ImageUploadResponse {
+interface ImageUploadResponse {
   success: boolean;
   imageUrl?: string;
   error?: string;
 }
 
-export const uploadImageToSupabase = async (file: File): Promise<ImageUploadResponse> => {
+const uploadImageToSupabase = async (file: File): Promise<ImageUploadResponse> => {
   try {
     // Validate file type and size
     const validTypes = ["image/jpeg", "image/png", "image/webp"];
@@ -37,12 +37,21 @@ export const uploadImageToSupabase = async (file: File): Promise<ImageUploadResp
       };
       reader.readAsDataURL(file);
     });
- } catch (error) {
-  console.error('Image upload failed:', error);
-  throw new Error(`Upload failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  } catch (error: any) {
+    return { success: false, error: 'Failed to upload image' };
+  }
 }
 
-export const deleteImageFromSupabase = async (imageUrl: string): Promise<boolean> => {
+const deleteImageFromSupabase = async (imageUrl: string): Promise<boolean> => {
   // For base64, we don't need to delete from storage
   return true;
 }
+
+// Use CommonJS exports
+module.exports = {
+  uploadImageToSupabase,
+  deleteImageFromSupabase
+};
+
+// Keep TypeScript types for the file
+export type { ImageUploadResponse };
